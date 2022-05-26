@@ -23,5 +23,22 @@ namespace MSSQLForCSProgs
                 MessageBox.Show("Подключение установлено!");
             }
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            SqlCommand command = new SqlCommand(
+                $"INSERT INTO [Students] (Name, Surname, Birthday, City, Phone, Email) VALUES (@Name, @Surname, @Birthday, @City, @Phone, @Email)", 
+                sqlConnection);
+            DateTime date = DateTime.Parse(textBox3.Text);
+
+            command.Parameters.AddWithValue("Name", textBox1.Text);
+            command.Parameters.AddWithValue("Surname", textBox2.Text);
+            command.Parameters.AddWithValue("Birthday", $"{date.Month}/{date.Day}/{date.Year}");
+            command.Parameters.AddWithValue("City", textBox4.Text);
+            command.Parameters.AddWithValue("Phone", textBox5.Text);
+            command.Parameters.AddWithValue("Email", textBox6.Text);
+
+            MessageBox.Show(command.ExecuteNonQuery().ToString());
+        }
     }
 }
