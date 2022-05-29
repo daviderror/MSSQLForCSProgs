@@ -9,6 +9,7 @@ namespace MSSQLForCSProgs
     public partial class Form1 : Form
     {
         private SqlConnection sqlConnection = null;
+        private SqlConnection nrthwindConnection = null;
         public Form1()
         {
             InitializeComponent();
@@ -18,10 +19,8 @@ namespace MSSQLForCSProgs
         {
             sqlConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["TestDB"].ConnectionString);
             sqlConnection.Open();
-            if (sqlConnection.State == ConnectionState.Open)
-            {
-                MessageBox.Show("Подключение установлено!");
-            }
+            nrthwindConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["NorthwindDB"].ConnectionString);
+            nrthwindConnection.Open();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -39,6 +38,14 @@ namespace MSSQLForCSProgs
             command.Parameters.AddWithValue("Email", textBox6.Text);
 
             MessageBox.Show(command.ExecuteNonQuery().ToString());
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            SqlDataAdapter dataAdapter = new SqlDataAdapter(textBox7.Text,nrthwindConnection);
+            DataSet dataSet = new DataSet();
+            dataAdapter.Fill(dataSet);
+            dataGridView1.DataSource = dataSet.Tables[0];
         }
     }
 }
