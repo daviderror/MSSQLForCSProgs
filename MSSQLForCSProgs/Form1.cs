@@ -14,7 +14,6 @@ namespace MSSQLForCSProgs
         {
             InitializeComponent();
         }
-
         private void Form1_Load(object sender, EventArgs e)
         {
             sqlConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["TestDB"].ConnectionString);
@@ -22,7 +21,6 @@ namespace MSSQLForCSProgs
             nrthwindConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["NorthwindDB"].ConnectionString);
             nrthwindConnection.Open();
         }
-
         private void button1_Click(object sender, EventArgs e)
         {
             SqlCommand command = new SqlCommand(
@@ -39,13 +37,41 @@ namespace MSSQLForCSProgs
 
             MessageBox.Show(command.ExecuteNonQuery().ToString());
         }
-
         private void button2_Click(object sender, EventArgs e)
         {
             SqlDataAdapter dataAdapter = new SqlDataAdapter(textBox7.Text,nrthwindConnection);
             DataSet dataSet = new DataSet();
             dataAdapter.Fill(dataSet);
             dataGridView1.DataSource = dataSet.Tables[0];
+        }
+        private void button3_Click(object sender, EventArgs e)
+        {
+            listView1.Items.Clear();
+            SqlDataReader sqlDataReader = null;
+            try
+            {
+                SqlCommand sqlCommand = new SqlCommand("SELECT ProductName , QuantityPerUnit , UnitPrice FROM Products", nrthwindConnection);
+                sqlDataReader = sqlCommand.ExecuteReader();
+                ListViewItem item = null;
+                while (sqlDataReader.Read())
+                {
+                    item = new ListViewItem(new string[] {Convert.ToString(sqlDataReader["ProductName"]),
+                        Convert.ToString(sqlDataReader["QuantityPerUnit"]),
+                        Convert.ToString(sqlDataReader["UnitPrice"]) });
+                    listView1.Items.Add(item);
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                if (sqlDataReader!=null && !sqlDataReader.IsClosed)
+                {
+                    sqlDataReader.Close();
+                }
+            }
         }
     }
 }
